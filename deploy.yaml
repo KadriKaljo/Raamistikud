@@ -10,7 +10,7 @@ hosts:
     hostname: 'ta24kaljo.itmajakas.ee'
     http_user: virt137758
     remote_user: virt137758
-    deploy_path: '~/domeenid/www.ta24kaljo.itmajakas.ee/'
+    deploy_path: '~/domeenid/www.ta24kaljo.itmajakas.ee/ta24'
 
 
 tasks:
