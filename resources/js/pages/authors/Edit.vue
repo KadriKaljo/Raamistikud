@@ -120,6 +120,7 @@ const submit = () => {
                     </Button>
                 </div>
             </form>
+        <pre>{{ form }}</pre>
         </div>
     </AppLayout>
 </template>

@@ -17,10 +17,11 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+
 const form = useForm({
     title: '',
     content: '',
-    author_id: '',
+    author_id: 'null',
     published: false,
 });
 
@@ -55,9 +56,9 @@ const submit = () => {
 
                             </div>
                             <div>
-                                <Label for="author">Author</Label>
-                                  <Select>
-                                    <SelectTrigger>
+                                <Label for="author_id">Author</Label>
+                                  <Select v-model="form.author_id">
+                                    <SelectTrigger class="mt-1">
                                       <SelectValue placeholder="Select an author" />
                                     </SelectTrigger>
                                     <SelectContent class="w-(--reka-select-trigger-width)">

@@ -1,98 +1,69 @@
-    <script setup lang="ts">
+<script setup lang="ts">
+import type { Post } from './Index.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import Button from '@/components/ui/button/Button.vue';
-import { Head, Link } from '@inertiajs/vue3';
-import { computed } from 'vue';
-import { edit, index, show } from '@/routes/posts';
+import { index, show } from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-
-const props = defineProps<{
-  post: {
-    id: number;
-    title: string;
-    content: string;
-    author: string;
-    published: boolean;
-    created_at: string;
-    updated_at: string;
-    created_at_formatted: string;
-    updated_at_formatted: string;
-  };
-}>();
+import { useForm } from '@inertiajs/vue3';
+import { add } from '@/routes/comments';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
+const props = defineProps<{ post: Post }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Posts', href: index().url },
-  { title: props.post.title, href: show.url(props.post.id) },
+  { title: props.post.title, href: show(props.post.id).url },
 ];
 
-const statusLabel = computed(() => (props.post.published ? 'Published' : 'Draft'));
-const statusClasses = computed(() =>
-  props.post.published
-    ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-    : 'bg-slate-100 text-slate-600 border border-slate-200',
-);
+const form = useForm({
+  content: '',
+});
+
+const submit = () => {
+  form.post(add(props.post.id).url), {
+    preserveScroll: true,
+    onSuccess: () => {
+      form.reset();
+    },
+  }
+};
+
+
 </script>
-
 <template>
-  <Head :title="props.post.title" />
-
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex h-full flex-col gap-6 overflow-x-auto rounded-xl p-6">
-      <div class="flex flex-col gap-4 rounded-xl border border-border/60 bg-muted/40 p-6 shadow-sm">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 class="text-3xl font-semibold tracking-tight">{{ props.post.title }}</h1>
-            <p class="text-sm text-muted-foreground">
-              Written by <span class="font-medium text-foreground">{{ props.post.author }}</span>
-            </p>
-          </div>
+  <div class="max-w-2xl mx-auto p-6 space-y-4">
+    <h1 class="text-2xl font-semibold">{{ post.title }}</h1>
 
-          <div class="flex flex-wrap items-center gap-3">
-            <span class="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium" :class="statusClasses">
-              {{ statusLabel }}
-            </span>
+    <p class="text-sm text-gray-500">
+      <span v-if="post.author">By {{ post.author.first_name }} {{ post.author.last_name }} · </span>
+      {{ post.created_at_formatted }}
+    </p>
 
-            <Button as-child variant="outline">
-              <Link :href="edit.url(props.post.id)">Edit Post</Link>
-            </Button>
-
-            <Button as-child variant="ghost">
-              <Link :href="index().url">Back to Posts</Link>
-            </Button>
-          </div>
-        </div>
-
-        <dl class="grid gap-4 rounded-lg border border-border/40 bg-background p-4 sm:grid-cols-3">
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-muted-foreground">Created</dt>
-            <dd class="text-sm text-foreground">
-              <div>{{ props.post.created_at_formatted }}</div>
-              <div class="text-xs text-muted-foreground">{{ props.post.created_at }}</div>
-            </dd>
-          </div>
-
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-muted-foreground">Last updated</dt>
-            <dd class="text-sm text-foreground">
-              <div>{{ props.post.updated_at_formatted }}</div>
-              <div class="text-xs text-muted-foreground">{{ props.post.updated_at }}</div>
-            </dd>
-          </div>
-
-          <div>
-            <dt class="text-xs uppercase tracking-wide text-muted-foreground">Post ID</dt>
-            <dd class="text-sm text-foreground">#{{ props.post.id }}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <section class="rounded-xl border border-border/60 bg-background p-6 shadow-sm">
-        <h2 class="mb-4 text-lg font-semibold text-foreground">Content</h2>
-        <div class="prose max-w-none text-sm leading-relaxed text-foreground/90 dark:prose-invert">
-          <p class="whitespace-pre-line">{{ props.post.content }}</p>
-        </div>
-      </section>
+    <div class="whitespace-pre-wrap">
+      {{ post.content }}
     </div>
-  </AppLayout>
+      <div class="space-y-4">
+        <h2 class="text-lg font-semibold">Comments</h2>
+        <div class="pb-6">
+          <form id="comment-form" @submit.prevent="submit">
+            <Textarea v-model="form.content"></Textarea>
+          </form>
+          <div>
+            <Button form="comment-form" type="submit">Submit</Button>
+          </div>
+        </div>
+        <ul>
+        <li v-for="comment in post.comments" :key="comment.id"  class="rounded-lg border bg-white/70 p-4 shadow-sm">
+          <p class="mb-1 text-sm text-gray-600">{{ comment.user.name }} - {{ comment.created_at_formatted }}</p>
+          {{comment.id}} - {{ comment.content }}
+          <span class="text-sm text-gray-500">
+          </span>
+        </li>
+    </ul>
+  </div>  
+  <div v-if="post.comments && post.comments.length === 0">
+    <p>No comments yet.</p>
+  </div>
+</div>
+</AppLayout>
 </template>
-

@@ -28,7 +28,7 @@ class PostController extends Controller
         Post::create($request ->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'author' => 'required|string|max:100',
+            'author_id' => 'required|integer|exists:authors,id',
             'published' => 'boolean',
         ]));
         return redirect()->route('posts.index');
@@ -38,8 +38,9 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+
         return Inertia::render('posts/View', [
-            'post' => $post,
+            'post' => $post->loadMissing('author', 'comments.user'),
         ]);
     }
 
@@ -47,6 +48,7 @@ class PostController extends Controller
     {
         return Inertia::render('posts/Edit', [
             'post' => $post,
+            'authors' => Author::all()->mapWithKeys(fn($author) => [$author->id => $author->first_name . ' ' . $author->last_name]),
         ]);
     }
 
@@ -55,7 +57,7 @@ class PostController extends Controller
         $post->update($request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'author' => 'required|string|max:100',
+            'author_id' => 'required|integer|exists:authors,id',
             'published' => 'boolean',
         ]));
         return redirect()->route('posts.index')->with('success', 'Post updated successfully.');

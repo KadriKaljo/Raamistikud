@@ -8,13 +8,16 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { index, update } from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
+import { Select, SelectContent, SelectGroup, SelectItem,  SelectTrigger, SelectValue } from '@/components/ui/select';
+
 
 const props = defineProps<{
+    authors: Record<number, string>;
     post: {
         id: number;
         title: string;
         content: string;
-        author: string;
+        author_id: number;
         published: boolean;
         created_at_formatted?: string;
         updated_at_formatted?: string;
@@ -28,10 +31,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: `Edit Post #${props.post.id}`, href: `/posts/${props.post.id}/edit` },
 ];
 
-const form = useForm({
+const form = useForm<{
+    title: string;
+    content: string;
+    author_id: number;
+    published: boolean;
+}>({    
+    author_id: props.post.author_id,
     title: props.post.title,
     content: props.post.content,
-    author: props.post.author,
     published: props.post.published,
 });
 
@@ -59,11 +67,17 @@ const submit = () => {
                 </div>
 
                 <div>
-                    <Label for="author">Author</Label>
-                    <Input id="author" v-model="form.author" />
-                    <p v-if="form.errors.author" class="text-red-600 text-sm">
-                        {{ form.errors.author }}
-                    </p>
+                    <Label for="author_id">Author</Label>
+                    <Select v-model="form.author_id">
+                        <SelectTrigger class="mt-1">
+                            <SelectValue placeholder="Select an author" />
+                        </SelectTrigger>
+                        <SelectContent class="w-(--reka-select-trigger-width)">
+                            <SelectGroup>
+                                <SelectItem v-for="(name, id) in authors" :key="id" :value="id"> {{ name }}  </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </div>
 
                 <div>
@@ -97,6 +111,7 @@ const submit = () => {
                     </Button>
                 </div>
             </form>
+            <pre>{{ form }}</pre>
         </div>
     </AppLayout>
 </template> 
