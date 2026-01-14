@@ -4,7 +4,7 @@ import { Head, useForm, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { index, update } from '@/routes/authors';
+import {index, update} from '@/routes/authors'; 
 import type { BreadcrumbItem } from '@/types';
 import { CalendarIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
