@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
+use App\Mail\Timetable;
+use Illuminate\Support\Facades\Mail;
 
 class TimetableNotification extends Command
 {
@@ -28,17 +30,20 @@ class TimetableNotification extends Command
      */
     public function handle()
     {
-        $startDate = now()->startOfWeek()->toISOString();
-        $endDate = now()->endOfWeek()->toISOString();
+        $startDate = now()->startOfWeek();
+        $endDate = now()->endOfWeek();
+
+        $from = $startDate->toISOString();
+        $thru = $endDate->toISOString();
 
         $response = Http::get('https://tahveltp.edu.ee/hois_back/timetableevents/timetableSearch', [
-            'from' => $startDate,
+            'from' => $from,
             'lang' => 'ET',
             'page' => 0,
             'schoolId' => 38,
             'size' => 50,
             'studentGroups' => '39248890-7051-4182-9a9a-8a82259b862b',
-            'thru' => $endDate,
+            'thru' => $thru,
         ]);
         $data = $response->json();
 
@@ -74,6 +79,10 @@ class TimetableNotification extends Command
             ];
         })->all();
     
-        dd($entries);
+        Mail::to('kadrikaljo@gmail.com')->send(
+            new Timetable(collect($entries), $startDate, $endDate)
+        );
+        
+        $this->info('Timetable email sent.');
     }
 }
