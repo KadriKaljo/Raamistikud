@@ -9,6 +9,8 @@ import AuthBase from '@/layouts/AuthLayout.vue';
 import { login } from '@/routes';
 import { Form, Head } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import {googleLogin} from '@/routes';
+import googleLogo from '@/components/google-logo.vue';
 </script>
 
 <template>
@@ -57,6 +59,11 @@ import { LoaderCircle } from 'lucide-vue-next';
                 <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="processing">
                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
                     Create account
+                </Button>
+                <Button variant="secondary" as="a" :href="googleLogin().url" type="button" class="mt-2 w-full" tabindex="5" :disabled="processing">
+                    <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
+                    Sign in with Google
+                    <google-logo/>
                 </Button>
             </div>
 

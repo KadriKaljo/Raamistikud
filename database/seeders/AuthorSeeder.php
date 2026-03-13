@@ -19,7 +19,7 @@ class AuthorSeeder extends Seeder
         $postFactory = Post::factory(5) 
         ->has(Comment::factory(3), 'comments');
 
-        Author::factory(100)
+        Author::factory(10)
         ->has($postFactory, 'posts')
         ->create();
     }
