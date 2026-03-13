@@ -11,6 +11,8 @@ import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import {googleLogin} from '@/routes';
+import googleLogo from '@/components/google-logo.vue';
 
 defineProps<{
     status?: string;
@@ -75,6 +77,11 @@ defineProps<{
                 <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="processing">
                     <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
                     Log in
+                </Button>
+                <Button variant="secondary" as="a" :href="googleLogin().url" type="button" class="mt-2 w-full" tabindex="5" :disabled="processing">
+                    <LoaderCircle v-if="processing" class="h-4 w-4 animate-spin" />
+                    Sign in with Google
+                    <google-logo/>
                 </Button>
             </div>
 
