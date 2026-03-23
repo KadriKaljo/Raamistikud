@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('posts', PostController::class);
     Route::resource('markers', MarkerController::class);
     Route::post('comments-add/{post}', [CommentController::class, 'store'])->name('comments.add');
+    Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
 });
 
 Route::get('/mailable', function () {

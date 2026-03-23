@@ -72,8 +72,13 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Comment $comment)
+    public function destroy(Comment $comment, Request $request )
     {
-        //
+        if (!(($request->user()->is_admin ?? false)) && $request->user()->id !== $comment->user_id) {
+            abort(403, 'Unauthorized action.');
+        }
+        $comment->delete();
+
+        return redirect()->back()->with('success', 'Comment deleted successfully.');
     }
 }

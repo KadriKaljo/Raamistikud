@@ -3,7 +3,7 @@ import type { Post } from './Index.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { index, show } from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import { add } from '@/routes/comments';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,21 @@ const submit = () => {
     },
   }
 };
+
+const deleteComment = (id: number) => {
+  if (!confirm('Kustuta kommentaar?')) return;
+
+  router.delete(`/comments/${id}`, {
+    preserveScroll: true,
+    onSuccess: () => {
+      console.log('Kommentaar kustutatud.');
+    },
+    onError: (err) => {
+      console.error(err);
+      alert('Kommentaari kustutamine ebaõnnestus.');
+    },
+  }); 
+}
 
 
 </script>
@@ -56,6 +71,7 @@ const submit = () => {
         <li v-for="comment in post.comments" :key="comment.id"  class="rounded-lg border bg-white/70 p-4 shadow-sm">
           <p class="mb-1 text-sm text-gray-600">{{ comment.user.name }} - {{ comment.created_at_formatted }}</p>
           {{comment.id}} - {{ comment.content }}
+          <button class="ml-2 text-sm text-red-600 underline" @click="deleteComment(comment.id)">Kustuta</button>
           <span class="text-sm text-gray-500">
           </span>
         </li>
