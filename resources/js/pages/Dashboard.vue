@@ -19,6 +19,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 defineProps<{
     weather: WeatherData;
     requestedCity: string;
+    markers: Array<{
+        id: number;
+        name: string;
+        latitude: number;
+        longitude: number;
+        description: string | null;
+        added: string;
+        edited: string | null;
+    }>;
 }>();
 </script>
 
@@ -113,7 +122,7 @@ defineProps<{
             <div
                 class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
             >
-                <MapView />
+                <MapView :markers="markers" />
             </div>
         </div>
     </AppLayout>

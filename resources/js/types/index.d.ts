@@ -36,6 +36,16 @@ export interface User {
 
 export type BreadcrumbItemType = BreadcrumbItem;
 
+export interface MapMarker {
+    id: number;
+    name: string;
+    latitude: number;
+    longitude: number;
+    description: string | null;
+    added: string;
+    edited: string | null;
+}
+
 export interface WeatherData {
     coord: {
       lon: number;

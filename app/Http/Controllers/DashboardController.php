@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Marker;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Http;
@@ -37,6 +38,7 @@ class DashboardController extends Controller
         return Inertia::render('Dashboard', [
             'weather' => $value,
             'requestedCity' => $city,
+            'markers' => Marker::orderByDesc('added')->get(),
         ]);
     }
 }
