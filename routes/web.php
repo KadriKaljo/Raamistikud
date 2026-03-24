@@ -10,6 +10,9 @@ use App\Mail\Timetable;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Collection;
 use Carbon\Carbon;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CheckoutController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -21,6 +24,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('markers', MarkerController::class);
     Route::post('comments-add/{post}', [CommentController::class, 'store'])->name('comments.add');
     Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+    Route::patch('/cart/{product}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+
 });
 
 Route::get('/mailable', function () {

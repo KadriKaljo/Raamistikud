@@ -1,0 +1,14 @@
+[90m= [39m[34;4mApp\Models\Order[39;24m {#6551
+    [34mid[39m: [35m1[39m,
+    [34muser_id[39m: [35m153[39m,
+    [34mfirst_name[39m: "[32mk[39m",
+    [34mlast_name[39m: "[32mk[39m",
+    [34memail[39m: "[32mk@k.ee[39m",
+    [34mphone[39m: "[32m123[39m",
+    [34mpayment_method[39m: "[32mmock[39m",
+    [34mpayment_status[39m: "[32msuccess[39m",
+    [34mtotal_amount[39m: [33m6035.97[39m,
+    [34mcreated_at[39m: "[32m2026-03-24 15:12:11[39m",
+    [34mupdated_at[39m: "[32m2026-03-24 15:12:11[39m",
+  }
+
