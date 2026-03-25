@@ -4,18 +4,47 @@ import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { index as postsIndex } from '@/routes/posts';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { Link, usePage } from '@inertiajs/vue3';
+import { BookOpen, Folder, LayoutGrid, MessageSquare, Shield } from 'lucide-vue-next';
+import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: dashboard(),
-        icon: LayoutGrid,
-    },
-];
+const page = usePage();
+
+const mainNavItems = computed((): NavItem[] => {
+    const items: NavItem[] = [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+            icon: LayoutGrid,
+        },
+        {
+            title: 'Blogi',
+            href: postsIndex(),
+            icon: BookOpen,
+        },
+    ];
+
+    const user = page.props.auth?.user as { is_admin?: boolean } | undefined;
+    if (user?.is_admin) {
+        items.push(
+            {
+                title: 'Kasutajad (admin)',
+                href: '/admin/users',
+                icon: Shield,
+            },
+            {
+                title: 'Kommentaarid (admin)',
+                href: '/admin/comments',
+                icon: MessageSquare,
+            },
+        );
+    }
+
+    return items;
+});
 
 const footerNavItems: NavItem[] = [
     {

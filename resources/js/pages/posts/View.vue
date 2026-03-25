@@ -3,83 +3,111 @@ import type { Post } from './Index.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { index, show } from '@/routes/posts';
 import type { BreadcrumbItem } from '@/types';
-import { router, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { add } from '@/routes/comments';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import InputError from '@/components/InputError.vue';
+import { computed } from 'vue';
+import { BookOpen } from 'lucide-vue-next';
+
 const props = defineProps<{ post: Post }>();
 
+const page = usePage();
+const authUser = computed(() => page.props.auth?.user as { id: number; is_admin?: boolean } | undefined | null);
+
+function canDeleteComment(commentUserId: number): boolean {
+    const u = authUser.value;
+    if (!u) return false;
+    return Boolean(u.is_admin) || u.id === commentUserId;
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Posts', href: index().url },
-  { title: props.post.title, href: show(props.post.id).url },
+    { title: 'Blogi', href: index().url },
+    { title: props.post.title, href: show(props.post.id).url },
 ];
 
 const form = useForm({
-  content: '',
+    content: '',
 });
 
 const submit = () => {
-  form.post(add(props.post.id).url), {
-    preserveScroll: true,
-    onSuccess: () => {
-      form.reset();
-    },
-  }
+    form.post(add(props.post.id).url, {
+        preserveScroll: true,
+        onSuccess: () => {
+            form.reset();
+        },
+    });
 };
 
 const deleteComment = (id: number) => {
-  if (!confirm('Kustuta kommentaar?')) return;
+    if (!confirm('Kustuta kommentaar?')) return;
 
-  router.delete(`/comments/${id}`, {
-    preserveScroll: true,
-    onSuccess: () => {
-      console.log('Kommentaar kustutatud.');
-    },
-    onError: (err) => {
-      console.error(err);
-      alert('Kommentaari kustutamine ebaõnnestus.');
-    },
-  }); 
-}
-
-
+    router.delete(`/comments/${id}`, {
+        preserveScroll: true,
+        onError: () => alert('Kommentaari kustutamine ebaõnnestus.'),
+    });
+};
 </script>
+
 <template>
-  <AppLayout :breadcrumbs="breadcrumbs">
-  <div class="max-w-2xl mx-auto p-6 space-y-4">
-    <h1 class="text-2xl font-semibold">{{ post.title }}</h1>
+    <Head :title="post.title" />
 
-    <p class="text-sm text-gray-500">
-      <span v-if="post.author">By {{ post.author.first_name }} {{ post.author.last_name }} · </span>
-      {{ post.created_at_formatted }}
-    </p>
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div
+            class="mx-auto max-w-2xl space-y-8 p-4 md:p-6"
+        >
+            <article
+                class="rounded-2xl border border-violet-200/40 bg-gradient-to-b from-card to-muted/20 p-6 shadow-sm dark:border-violet-900/30 dark:from-card dark:to-muted/10 md:p-8"
+            >
+                <div class="mb-4 inline-flex rounded-xl bg-violet-500/10 p-2 text-violet-700 dark:text-violet-300">
+                    <BookOpen class="size-5" aria-hidden="true" />
+                </div>
+                <h1 class="text-2xl font-semibold tracking-tight md:text-3xl">{{ post.title }}</h1>
 
-    <div class="whitespace-pre-wrap">
-      {{ post.content }}
-    </div>
-      <div class="space-y-4">
-        <h2 class="text-lg font-semibold">Comments</h2>
-        <div class="pb-6">
-          <form id="comment-form" @submit.prevent="submit">
-            <Textarea v-model="form.content"></Textarea>
-          </form>
-          <div>
-            <Button form="comment-form" type="submit">Submit</Button>
-          </div>
+                <p class="mt-3 text-sm text-muted-foreground">
+                    <span v-if="post.author">{{ post.author.first_name }} {{ post.author.last_name }} · </span>
+                    {{ post.created_at_formatted }}
+                </p>
+
+                <div class="mt-6 whitespace-pre-wrap border-t border-border/60 pt-6 text-[15px] leading-relaxed text-foreground">
+                    {{ post.description }}
+                </div>
+            </article>
+
+            <section class="space-y-5 rounded-2xl border border-border/60 bg-card/80 p-6 shadow-sm dark:bg-card/40">
+                <h2 class="text-lg font-semibold tracking-tight">Kommentaarid</h2>
+
+                <form id="comment-form" class="space-y-3" @submit.prevent="submit">
+                    <Textarea v-model="form.content" placeholder="Lisa kommentaar…" rows="3" class="resize-y min-h-[5rem]" />
+                    <InputError :message="form.errors.content" />
+                    <Button type="submit" :disabled="form.processing">Saada kommentaar</Button>
+                </form>
+
+                <ul class="space-y-3 pt-2">
+                    <li
+                        v-for="comment in post.comments"
+                        :key="comment.id"
+                        class="rounded-xl border border-border/80 bg-muted/20 p-4 dark:bg-muted/10"
+                    >
+                        <p class="mb-2 text-sm text-muted-foreground">
+                            <span class="font-medium text-foreground">{{ comment.user.name }}</span>
+                            · {{ comment.created_at_formatted }}
+                        </p>
+                        <p class="text-sm leading-relaxed whitespace-pre-wrap">{{ comment.content }}</p>
+                        <button
+                            v-if="canDeleteComment(comment.user_id)"
+                            type="button"
+                            class="mt-3 text-sm font-medium text-red-600 underline-offset-2 hover:underline dark:text-red-400"
+                            @click="deleteComment(comment.id)"
+                        >
+                            Kustuta
+                        </button>
+                    </li>
+                </ul>
+
+                <p v-if="!post.comments?.length" class="text-sm text-muted-foreground">Kommentaare veel pole — ole esimene.</p>
+            </section>
         </div>
-        <ul>
-        <li v-for="comment in post.comments" :key="comment.id"  class="rounded-lg border bg-white/70 p-4 shadow-sm">
-          <p class="mb-1 text-sm text-gray-600">{{ comment.user.name }} - {{ comment.created_at_formatted }}</p>
-          {{comment.id}} - {{ comment.content }}
-          <button class="ml-2 text-sm text-red-600 underline" @click="deleteComment(comment.id)">Kustuta</button>
-          <span class="text-sm text-gray-500">
-          </span>
-        </li>
-    </ul>
-  </div>  
-  <div v-if="post.comments && post.comments.length === 0">
-    <p>No comments yet.</p>
-  </div>
-</div>
-</AppLayout>
+    </AppLayout>
 </template>

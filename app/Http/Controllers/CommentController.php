@@ -2,83 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCommentRequest;
-use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CommentController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Administraatori: kõik kommentaarid (kustutamise võimalusega).
      */
-    public function index()
+    public function adminIndex(Request $request)
     {
-        //
-    }
+        if (! ($request->user()?->is_admin)) {
+            abort(403);
+        }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Post $post,Request $request)
-    {
-        
-        $request->validate([
-            'content' => 'required|max:255',
+        return Inertia::render('admin/Comments', [
+            'comments' => Comment::query()
+                ->with(['post:id,title', 'user:id,name,email'])
+                ->latest()
+                ->paginate(30),
         ]);
-        
+    }
+
+    public function store(Post $post, Request $request)
+    {
+        $request->validate([
+            'content' => 'required|max:2000',
+        ]);
+
         $post->comments()->create([
             'user_id' => $request->user()->id,
-            'content' => $request->content
+            'content' => $request->content,
         ]);
 
         return redirect()->back();
-
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Comment $comment)
+    public function destroy(Comment $comment, Request $request)
     {
-        //
-    }
+        $user = $request->user();
+        if (! $user) {
+            abort(403);
+        }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateCommentRequest $request, Comment $comment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Comment $comment, Request $request )
-    {
-        if (!(($request->user()->is_admin ?? false)) && $request->user()->id !== $comment->user_id) {
+        $canDelete = $user->is_admin || $user->id === $comment->user_id;
+        if (! $canDelete) {
             abort(403, 'Unauthorized action.');
         }
+
         $comment->delete();
 
-        return redirect()->back()->with('success', 'Comment deleted successfully.');
+        return redirect()->back()->with('success', 'Kommentaar kustutatud.');
     }
 }

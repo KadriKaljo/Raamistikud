@@ -25,9 +25,9 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
-        Post::create($request ->validate([
+        Post::create($request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'description' => 'required|string',
             'author_id' => 'required|integer|exists:authors,id',
             'published' => 'boolean',
         ]));
@@ -56,7 +56,7 @@ class PostController extends Controller
     {
         $post->update($request->validate([
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'description' => 'required|string',
             'author_id' => 'required|integer|exists:authors,id',
             'published' => 'boolean',
         ]));

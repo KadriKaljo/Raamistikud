@@ -19,7 +19,7 @@ import { MoreVertical } from 'lucide-vue-next';
 // Breadcrumbs for layout navigation
 const breadcrumbs: BreadcrumbItem[] = [
   {
-    title: 'Posts',
+    title: 'Blogi',
     href: index().url,
   },
 ];
@@ -68,7 +68,7 @@ type User = {
 export type Post = {
   id: number;
   title: string;
-  content: string;
+  description: string;
   author_id: number;
   published: boolean;
   created_at: string;
@@ -88,85 +88,94 @@ defineProps<{
   posts: PaginatedResponse;
 }>();
 const deletePost = (postId: number) => {
-  if (!confirm('Aga miks sa kustutad?')) return;
+  if (!confirm('Kustutada see postitus?')) return;
   router.delete(destroy.url(postId), {
     preserveScroll: true,
-    onSuccess: () => {
-      console.log('Postitus sai kustutatud.');
-    },
-    onError: (err) => {
-      console.error(err);
-      alert('Ups, sa ei saanud eluga hakkama.');
-    },
+    onError: () => alert('Postitust ei saanud kustutada.'),
   });
-}
+};
 
 </script>
 
 <template>
 
-  <Head title="Posts" />
+  <Head title="Blogi" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="flex h-full flex-col gap-4 overflow-x-auto rounded-xl p-4">
-      <!-- <pre>{{ posts }}</pre> -->
+    <div
+      class="mx-auto flex h-full w-full max-w-6xl flex-col gap-6 overflow-x-auto rounded-2xl bg-gradient-to-b from-muted/30 via-background to-background p-4 md:p-6 dark:from-muted/10"
+    >
+      <div>
+        <h1 class="text-xl font-semibold tracking-tight md:text-2xl">Blogi postitused</h1>
+        <p class="mt-1 text-sm text-muted-foreground">Loetelu, muutmine ja kustutamine.</p>
+      </div>
 
-      <Table>
-        <TableCaption>A list of your recent blog posts.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead class="w-[100px]">ID</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Author</TableHead>
-            <TableHead class="text-right">Created at</TableHead>
-            <TableHead class="text-right">Updated At</TableHead>
-            <TableHead class="text-right">Published</TableHead>
-            <TableHead>
-              <span class="sr-only">Actions</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
+      <div class="overflow-hidden rounded-2xl border border-border/60 bg-card/90 shadow-sm dark:bg-card/60">
+        <Table>
+          <TableCaption class="text-muted-foreground">Viimased postitused (kuni 30 lehel).</TableCaption>
+          <TableHeader>
+            <TableRow class="bg-muted/50 hover:bg-muted/50">
+              <TableHead class="w-[72px]">ID</TableHead>
+              <TableHead>Pealkiri</TableHead>
+              <TableHead>Autor</TableHead>
+              <TableHead class="text-right">Loodud</TableHead>
+              <TableHead class="text-right">Muudetud</TableHead>
+              <TableHead class="text-right">Avaldatud</TableHead>
+              <TableHead>
+                <span class="sr-only">Toimingud</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
 
-        <TableBody>
-          <TableRow v-for="post in posts.data" :key="post.id">
-            <TableCell class="font-medium">{{ post.id }}</TableCell>
-            <TableCell>{{ post.title }}</TableCell>
-            <TableCell>{{ post.author.first_name }} {{ post.author.last_name }}</TableCell>
-            <TableCell class="text-right">{{ post.created_at_formatted }}</TableCell>
-            <TableCell class="text-right">{{ post.updated_at_formatted }}</TableCell>
-            <TableCell class="text-right">
-              <span :class="post.published ? 'text-green-600' : 'text-gray-400'">
-                {{ post.published ? 'Yes' : 'No' }}
-              </span>
-            </TableCell>
+          <TableBody>
+            <TableRow v-for="post in posts.data" :key="post.id" class="hover:bg-muted/30">
+              <TableCell class="font-mono text-xs text-muted-foreground">{{ post.id }}</TableCell>
+              <TableCell class="font-medium">{{ post.title }}</TableCell>
+              <TableCell class="text-sm">
+                {{ post.author.first_name }} {{ post.author.last_name }}
+              </TableCell>
+              <TableCell class="text-right text-sm text-muted-foreground">{{ post.created_at_formatted }}</TableCell>
+              <TableCell class="text-right text-sm text-muted-foreground">{{ post.updated_at_formatted }}</TableCell>
+              <TableCell class="text-right">
+                <span
+                  :class="
+                    post.published
+                      ? 'rounded-full bg-emerald-500/15 px-2 py-0.5 text-xs font-medium text-emerald-800 dark:text-emerald-300'
+                      : 'rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground'
+                  "
+                >
+                  {{ post.published ? 'Jah' : 'Ei' }}
+                </span>
+              </TableCell>
 
-            <TableCell>
-              <div class="flex justify-end">
-                <DropdownMenu>
-                  <DropdownMenuTrigger as-child>
-                    <Button size="icon" variant="ghost">
-                      <MoreVertical />
-                    </Button>
-                  </DropdownMenuTrigger>
+              <TableCell>
+                <div class="flex justify-end">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger as-child>
+                      <Button size="icon" variant="ghost">
+                        <MoreVertical />
+                      </Button>
+                    </DropdownMenuTrigger>
 
-                  <DropdownMenuContent>
-                    <DropdownMenuItem as-child>
-                      <Link :href="show.url(post.id)">View</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem as-child>
-                      <Link :href="edit.url(post.id)">Edit</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem class="text-destructive" @click="deletePost(post.id)">
-                      Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem as-child>
+                        <Link :href="show.url(post.id)">Vaata</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem as-child>
+                        <Link :href="edit.url(post.id)">Muuda</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem class="text-destructive focus:text-destructive" @click="deletePost(post.id)">
+                        Kustuta
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </div>
 
       <Pagination class="w-full" :page="posts.current_page" v-slot="{ page }" :total="posts.total"
         :items-per-page="posts.per_page" @update:page="(page) => router.get(index().url, { page: page })">

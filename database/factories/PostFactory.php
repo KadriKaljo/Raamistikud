@@ -19,7 +19,7 @@ class PostFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(),
-            'content' => $this->faker->text(),
+            'description' => $this->faker->paragraphs(3, true),
             'author_id' => Author::factory(),
             'published' => $this->faker->boolean(),
         ];

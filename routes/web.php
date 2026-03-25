@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\WeatherController;
@@ -26,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('markers', MarkerController::class);
     Route::post('comments-add/{post}', [CommentController::class, 'store'])->name('comments.add');
     Route::delete('comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::get('admin/comments', [CommentController::class, 'adminIndex'])->name('admin.comments.index');
+    Route::get('admin/users', [AdminUserController::class, 'index'])->name('admin.users.index');
+    Route::patch('admin/users/{user}', [AdminUserController::class, 'update'])->name('admin.users.update');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
@@ -95,7 +99,8 @@ Route::get('/mailable', function () {
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
 require __DIR__.'/authors.php';
-require __DIR__.'/posts.php';
+// posts on juba Route::resource('posts', ...) ülal; posts.php dubleeriks marsruute
+// require __DIR__.'/posts.php';
 // require __DIR__.'/comments.php';
 
 

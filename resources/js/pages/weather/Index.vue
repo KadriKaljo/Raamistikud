@@ -38,6 +38,10 @@ function runWeatherSearch() {
     const city = cityQuery.value.trim();
     router.get('/weather', city === '' ? {} : { city }, { preserveScroll: true });
 }
+
+function goHome() {
+    router.get(dashboard().url, {}, { preserveScroll: true });
+}
 </script>
 
 <template>
@@ -48,6 +52,18 @@ function runWeatherSearch() {
             class="mx-auto flex w-full max-w-xl flex-col gap-6 overflow-x-auto rounded-2xl bg-gradient-to-b from-muted/30 via-background to-background p-4 md:p-6 dark:from-muted/10"
         >
             <div class="flex flex-col gap-5">
+                <div class="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        class="rounded-full border-dashed"
+                        @click="goHome"
+                    >
+                        ← Tagasi valikusse
+                    </Button>
+                </div>
+
                 <form
                     class="flex flex-col gap-3 rounded-2xl border border-border/60 bg-card/80 p-4 shadow-sm backdrop-blur-sm sm:flex-row sm:items-end sm:gap-4 dark:bg-card/50"
                     @submit.prevent="runWeatherSearch"
