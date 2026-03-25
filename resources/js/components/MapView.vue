@@ -8,6 +8,7 @@ import { Label } from "./ui/label";
 import Input from "./ui/input/Input.vue";
 import Textarea from "./ui/textarea/Textarea.vue";
 import Button from "./ui/button/Button.vue";
+import { buildMarkerPopupHtml } from "@/utils/markerPopupHtml";
 
 const props = defineProps<{
     markers: Array<{
@@ -43,9 +44,10 @@ onMounted(() => {
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
   ).addTo(map)
 
-  props.markers.forEach(marker => {
+  props.markers.forEach((marker) => {
     L.marker([marker.latitude, marker.longitude])
-    .addTo(map).bindPopup(marker.name);
+      .addTo(map)
+      .bindPopup(buildMarkerPopupHtml(marker), { maxWidth: 320, className: "marker-popup-rich" });
   });
 
   map.on('click', mapClick);

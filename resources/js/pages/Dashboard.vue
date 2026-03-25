@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
-import { WeatherData, type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { type BreadcrumbItem } from '@/types';
+import { Head, Link, router } from '@inertiajs/vue3';
 import MapView from '@/components/MapView.vue';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { computed } from 'vue';
+import { BookOpen, CloudSun, MapPinned, ShoppingBag } from 'lucide-vue-next';
+
+type DashboardPanel = 'home' | 'map';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,9 +17,8 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-defineProps<{
-    weather: WeatherData;
-    requestedCity: string;
+const props = defineProps<{
+    initialPanel?: DashboardPanel;
     markers: Array<{
         id: number;
         name: string;
@@ -29,101 +29,186 @@ defineProps<{
         edited: string | null;
     }>;
 }>();
+
+const panel = computed(() => props.initialPanel ?? 'home');
+
+function goHome() {
+    router.get(dashboard().url, {}, { preserveScroll: true });
+}
+
+function goMap() {
+    router.get(dashboard().url, { panel: 'map' }, { preserveScroll: true });
+}
 </script>
 
 <template>
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-            <form
-                :action="dashboard().url"
-                method="get"
-                class="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-4"
-            >
-                <div class="grid w-full max-w-md gap-2">
-                    <Label for="dashboard-city">Sisesta linn</Label>
-                    <Input
-                        id="dashboard-city"
-                        name="city"
-                        type="text"
-                        :default-value="requestedCity"
-                        placeholder="Nt Tartu või London, UK"
-                        autocomplete="off"
-                    />
-                </div>
-                <Button type="submit">Otsi</Button>
-            </form>
-
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+        <div
+            class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-2xl bg-gradient-to-b from-muted/30 via-background to-background p-4 md:p-6 dark:from-muted/10"
+        >
+            <div v-if="panel === 'home'" class="space-y-6">
                 <div
-                    class="rounded-2xl border border-sidebar-border/70 bg-white p-6 shadow-sm dark:border-sidebar-border dark:bg-card"
+                    class="rounded-2xl border border-border/50 bg-card/60 px-5 py-4 shadow-sm backdrop-blur-sm dark:bg-card/40"
                 >
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="min-w-0">
-                            <p class="text-sm text-muted-foreground">Hetkeilm</p>
+                    <h1 class="text-xl font-semibold tracking-tight md:text-2xl">Tere tulemast</h1>
+                    <p class="mt-1 text-sm text-muted-foreground">Vali tegevus — ilm, kaart, pood või blogi.</p>
+                </div>
 
-                            <h2 class="mt-2 text-4xl font-bold leading-none tracking-tight">
-                                {{ Math.round(weather.main.temp) }} °C
-                            </h2>
+                <div class="grid gap-4 md:grid-cols-2">
+                    <div class="flex flex-col gap-4">
+                        <Link
+                            href="/weather"
+                            class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-sky-200/60 bg-gradient-to-br from-sky-50/90 via-white to-sky-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-sky-300/80 hover:shadow-md dark:border-sky-900/50 dark:from-sky-950/35 dark:via-card dark:to-sky-950/20 dark:hover:border-sky-700/60"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span
+                                    class="inline-flex rounded-xl bg-sky-500/15 p-2.5 text-sky-600 ring-1 ring-sky-500/20 dark:bg-sky-400/10 dark:text-sky-300"
+                                >
+                                    <CloudSun class="size-6" aria-hidden="true" />
+                                </span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-widest text-sky-600/80 dark:text-sky-400/90"
+                                    >Ilm</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block text-lg font-semibold tracking-tight">Ilmateade</span>
+                                <span class="block text-sm leading-relaxed text-muted-foreground"
+                                    >Hetkeilm ja linna otsing</span
+                                >
+                            </div>
+                            <span
+                                class="text-sm font-medium text-sky-700 transition group-hover:text-sky-800 dark:text-sky-400 dark:group-hover:text-sky-300"
+                                >Ava ilmavaade →</span
+                            >
+                        </Link>
 
-                            <p class="mt-3 text-lg font-medium capitalize">
-                                {{ weather.weather[0].description }}
-                            </p>
-
-                            <p class="mt-1 text-sm text-muted-foreground">
-                                {{ weather.name }}, {{ weather.sys.country }}
-                            </p>
-                        </div>
-
-                        <div class="shrink-0">
-                            <img
-                                class="h-48 w-48"
-                                :src="`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`"
-                                alt="Ilmaikoon"
-                            />
-                        </div>
+                        <button
+                            type="button"
+                            class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300/80 hover:shadow-md dark:border-emerald-900/50 dark:from-emerald-950/35 dark:via-card dark:to-teal-950/20 dark:hover:border-emerald-700/60"
+                            @click="goMap"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span
+                                    class="inline-flex rounded-xl bg-emerald-500/15 p-2.5 text-emerald-600 ring-1 ring-emerald-500/20 dark:bg-emerald-400/10 dark:text-emerald-300"
+                                >
+                                    <MapPinned class="size-6" aria-hidden="true" />
+                                </span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-widest text-emerald-700/80 dark:text-emerald-400/90"
+                                    >Kaart</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block text-lg font-semibold tracking-tight">Markerid</span>
+                                <span class="block text-sm leading-relaxed text-muted-foreground"
+                                    >Interaktiivne kaart ja salvestamine</span
+                                >
+                            </div>
+                            <span
+                                class="text-sm font-medium text-emerald-800 transition group-hover:text-emerald-900 dark:text-emerald-400 dark:group-hover:text-emerald-300"
+                                >Ava kaart →</span
+                            >
+                        </button>
                     </div>
 
-                    <div class="mt-6 grid grid-cols-2 gap-3">
-                        <div class="rounded-xl bg-muted/40 px-4 py-3">
-                            <p class="text-xs uppercase tracking-wide text-muted-foreground">
-                                💨 Tuule kiirus
-                            </p>
-                            <p class="mt-1 text-sm font-medium">
-                                {{ weather.wind.speed }} m/s
-                            </p>
-                        </div>
+                    <div class="flex flex-col gap-4">
+                        <Link
+                            href="/products"
+                            class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50/90 via-white to-orange-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-300/80 hover:shadow-md dark:border-amber-900/50 dark:from-amber-950/35 dark:via-card dark:to-orange-950/20 dark:hover:border-amber-700/60"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span
+                                    class="inline-flex rounded-xl bg-amber-500/15 p-2.5 text-amber-700 ring-1 ring-amber-500/20 dark:bg-amber-400/10 dark:text-amber-300"
+                                >
+                                    <ShoppingBag class="size-6" aria-hidden="true" />
+                                </span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-widest text-amber-800/80 dark:text-amber-400/90"
+                                    >Pood</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block text-lg font-semibold tracking-tight">E-pood</span>
+                                <span class="block text-sm leading-relaxed text-muted-foreground"
+                                    >Tooted ja ostukorv</span
+                                >
+                            </div>
+                            <span
+                                class="text-sm font-medium text-amber-900 transition group-hover:text-amber-950 dark:text-amber-400 dark:group-hover:text-amber-300"
+                                >Mine toodete juurde →</span
+                            >
+                        </Link>
 
-                        <div class="rounded-xl bg-muted/40 px-4 py-3">
-                            <p class="text-xs uppercase tracking-wide text-muted-foreground">
-                                💧 Õhuniiskus
-                            </p>
-                            <p class="mt-1 text-sm font-medium">
-                                {{ weather.main.humidity }}%
-                            </p>
-                        </div>
+                        <Link
+                            href="/posts"
+                            class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-50/90 via-white to-fuchsia-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-violet-300/80 hover:shadow-md dark:border-violet-900/50 dark:from-violet-950/35 dark:via-card dark:to-fuchsia-950/20 dark:hover:border-violet-700/60"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span
+                                    class="inline-flex rounded-xl bg-violet-500/15 p-2.5 text-violet-700 ring-1 ring-violet-500/20 dark:bg-violet-400/10 dark:text-violet-300"
+                                >
+                                    <BookOpen class="size-6" aria-hidden="true" />
+                                </span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-widest text-violet-800/80 dark:text-violet-400/90"
+                                    >Blogi</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block text-lg font-semibold tracking-tight">Blogi</span>
+                                <span class="block text-sm leading-relaxed text-muted-foreground"
+                                    >Postitused ja kommentaarid</span
+                                >
+                            </div>
+                            <span
+                                class="text-sm font-medium text-violet-900 transition group-hover:text-violet-950 dark:text-violet-400 dark:group-hover:text-violet-300"
+                                >Mine blogisse →</span
+                            >
+                        </Link>
                     </div>
-                </div>
-
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
                 </div>
             </div>
 
-            <div
-                class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
-            >
-                <MapView :markers="markers" />
-            </div>
+            <template v-else>
+                <div class="flex items-center gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        class="rounded-full border-dashed"
+                        @click="goHome"
+                    >
+                        ← Tagasi valikusse
+                    </Button>
+                </div>
+
+                <div
+                    v-if="panel === 'map'"
+                    class="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-emerald-200/50 bg-card shadow-md dark:border-emerald-900/40"
+                >
+                    <div
+                        class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-200/40 bg-gradient-to-r from-emerald-50/80 to-transparent px-4 py-3.5 dark:border-emerald-900/40 dark:from-emerald-950/30"
+                    >
+                        <div>
+                            <p class="text-sm font-semibold tracking-tight">Markerid</p>
+                            <p class="text-xs text-muted-foreground">Kliki kaardil, et lisada marker</p>
+                        </div>
+                        <Link
+                            href="/markers"
+                            class="shrink-0 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-800 transition hover:bg-emerald-500/20 dark:text-emerald-300"
+                        >
+                            Kõik markerid →
+                        </Link>
+                    </div>
+
+                    <div class="relative min-h-[min(50vh,420px)] flex-1 lg:min-h-[min(65vh,560px)]">
+                        <MapView :markers="markers" />
+                    </div>
+                </div>
+            </template>
         </div>
     </AppLayout>
 </template>
