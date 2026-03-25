@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import '@/lib/leafletDefaultIcon';
 import { buildMarkerPopupHtml } from '@/utils/markerPopupHtml';
 
 const props = defineProps<{

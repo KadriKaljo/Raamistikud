@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue"
 import L, {type LeafletMouseEvent} from "leaflet"
 import "leaflet/dist/leaflet.css"
+import "@/lib/leafletDefaultIcon"
 import { Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription } from "./ui/dialog";
 import { Form } from "@inertiajs/vue3";
 import { Label } from "./ui/label";
