@@ -67,7 +67,7 @@ class CheckoutController extends Controller
             $this->finalizeSuccessfulOrder($order);
             $request->session()->forget('cart');
 
-            return redirect()->route('cart.index')->with('success', 'Mock-makse õnnestus, tellimus kinnitatud.');
+            return redirect()->route('checkout.complete', $order)->with('success', 'Mock-makse õnnestus, tellimus kinnitatud.');
         }
 
         $secret = (string) config('services.stripe.secret');
@@ -145,7 +145,7 @@ class CheckoutController extends Controller
 
             $request->session()->forget('cart');
 
-            return redirect()->route('cart.index')->with('success', 'Makse õnnestus, tellimus kinnitatud.');
+            return redirect()->route('checkout.complete', $order)->with('success', 'Makse õnnestus, tellimus kinnitatud.');
         }
 
         $order->update(['payment_status' => 'pending']);
@@ -162,6 +162,43 @@ class CheckoutController extends Controller
         }
 
         return redirect()->route('checkout.index')->with('error', 'Makse katkestati või ebaõnnestus.');
+    }
+
+    public function complete(Request $request, Order $order)
+    {
+        $this->authorizeOrder($request, $order);
+        if ($order->payment_status !== 'success') {
+            return redirect()->route('cart.index')->with('info', 'Tellimus ei ole veel edukalt kinnitatud.');
+        }
+
+        return Inertia::render('checkout/Complete', [
+            'order' => [
+                'id' => $order->id,
+                'first_name' => $order->first_name,
+                'last_name' => $order->last_name,
+                'email' => $order->email,
+                'phone' => $order->phone,
+                'payment_method' => $order->payment_method,
+                'payment_status' => $order->payment_status,
+                'total_amount' => (float) $order->total_amount,
+                'created_at' => $order->created_at?->toDateTimeString(),
+            ],
+            'items' => OrderItem::query()
+                ->where('order_id', $order->id)
+                ->get()
+                ->map(function (OrderItem $item) {
+                    $product = Product::find($item->product_id);
+
+                    return [
+                        'product_id' => (int) $item->product_id,
+                        'name' => $product?->name ?? "Toode #{$item->product_id}",
+                        'quantity' => (int) $item->quantity,
+                        'unit_price' => (float) $item->unit_price,
+                        'line_total' => (float) $item->line_total,
+                    ];
+                })
+                ->values(),
+        ]);
     }
 
     private function authorizeOrder(Request $request, Order $order): void

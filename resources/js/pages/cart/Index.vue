@@ -48,6 +48,7 @@ const submitCheckout = () => {
     <div class="mx-auto max-w-5xl space-y-5 p-4 md:p-6">
       <section class="rounded-2xl border border-sky-200/50 bg-gradient-to-br from-sky-50/80 via-card to-blue-50/35 p-5 shadow-sm dark:border-sky-900/40 dark:from-sky-950/30 dark:via-card dark:to-blue-950/20">
         <h1 class="text-2xl font-semibold tracking-tight">Ostukorv</h1>
+        
       </section>
       <p v-if="flashSuccess" class="rounded border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">{{ flashSuccess }}</p>
       <p v-if="flashError" class="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ flashError }}</p>
