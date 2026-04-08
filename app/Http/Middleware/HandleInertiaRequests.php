@@ -42,6 +42,13 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
+            'cartCount' => fn () => collect($request->session()->get('cart', []))
+                ->sum(fn ($item) => (int) ($item['quantity'] ?? 0)),
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
+                'info' => fn () => $request->session()->get('info'),
+            ],
             'auth' => [
                 'user' => $request->user(),
             ],

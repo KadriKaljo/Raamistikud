@@ -31,7 +31,7 @@ export function buildMarkerPopupHtml(m: MarkerPopupFields): string {
   <p style="margin:6px 0 0;font-size:11px;font-family:ui-monospace,monospace;opacity:.9;">${escapeHtml(lat)}, ${escapeHtml(lng)}</p>
   ${descBlock}
   <p style="margin:10px 0 0;font-size:12px;">
-    <a href="/markers/${m.id}" style="color:#047857;font-weight:600;">Täielik vaade →</a>
+    <a href="/markers/${m.id}" style="color:#047857;font-weight:600;">Detailvaade →</a>
   </p>
 </div>`.trim();
 }

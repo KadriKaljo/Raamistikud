@@ -16,8 +16,8 @@ const props = defineProps<{
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Markers', href: '/markers' },
-  { title: `Edit #${props.marker.id}`, href: `/markers/${props.marker.id}/edit` },
+  { title: 'Markerid', href: '/markers' },
+  { title: `Muuda #${props.marker.id}`, href: `/markers/${props.marker.id}/edit` },
 ];
 
 const form = useForm({
@@ -35,40 +35,40 @@ const submit = () => {
 </script>
 
 <template>
-  <Head :title="`Edit marker #${props.marker.id}`" />
+  <Head :title="`Muuda markerit #${props.marker.id}`" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
     <div class="mx-auto max-w-2xl p-6 space-y-4">
-      <h1 class="text-2xl font-semibold">Edit Marker</h1>
+      <h1 class="text-2xl font-semibold">Muuda markerit</h1>
 
       <form @submit.prevent="submit" class="space-y-4">
         <div>
-          <label class="mb-1 block text-sm font-medium">Name</label>
+          <label class="mb-1 block text-sm font-medium">Nimi</label>
           <input v-model="form.name" class="w-full rounded-md border px-3 py-2" />
           <p v-if="form.errors.name" class="mt-1 text-sm text-red-600">{{ form.errors.name }}</p>
         </div>
 
         <div>
-          <label class="mb-1 block text-sm font-medium">Latitude</label>
+          <label class="mb-1 block text-sm font-medium">Laiuskraad</label>
           <input v-model="form.latitude" type="number" step="any" class="w-full rounded-md border px-3 py-2" />
           <p v-if="form.errors.latitude" class="mt-1 text-sm text-red-600">{{ form.errors.latitude }}</p>
         </div>
 
         <div>
-          <label class="mb-1 block text-sm font-medium">Longitude</label>
+          <label class="mb-1 block text-sm font-medium">Pikkuskraad</label>
           <input v-model="form.longitude" type="number" step="any" class="w-full rounded-md border px-3 py-2" />
           <p v-if="form.errors.longitude" class="mt-1 text-sm text-red-600">{{ form.errors.longitude }}</p>
         </div>
 
         <div>
-          <label class="mb-1 block text-sm font-medium">Description</label>
+          <label class="mb-1 block text-sm font-medium">Kirjeldus</label>
           <textarea v-model="form.description" class="w-full rounded-md border px-3 py-2" />
           <p v-if="form.errors.description" class="mt-1 text-sm text-red-600">{{ form.errors.description }}</p>
         </div>
 
         <div class="flex gap-3">
-          <button type="submit" class="rounded-md border px-3 py-2">Save</button>
-          <Link href="/markers" class="rounded-md border px-3 py-2">Cancel</Link>
+          <button type="submit" class="rounded-md border px-3 py-2">Salvesta</button>
+          <Link href="/markers" class="rounded-md border px-3 py-2">Loobu</Link>
         </div>
       </form>
     </div>

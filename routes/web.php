@@ -1,20 +1,21 @@
 <?php
 
 use App\Http\Controllers\AdminUserController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\WeatherController;
-use App\Http\Controllers\MarkerController;
-use App\Http\Controllers\PostController;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-use App\Mail\Timetable;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Collection;
-use Carbon\Carbon;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\MarkerController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WeatherController;
+use App\Mail\Timetable;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -22,6 +23,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
+    Route::get('map', MapController::class)->name('map.index');
     Route::get('weather', WeatherController::class)->name('weather.index');
     Route::resource('posts', PostController::class);
     Route::resource('markers', MarkerController::class);
@@ -37,6 +39,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/cart/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
+    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/checkout/cancel/{order}', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
 
 });
 
@@ -72,6 +76,7 @@ Route::get('/mailable', function () {
 
     $grouped = $sorted->groupBy(function ($event) {
         $date = Carbon::parse(data_get($event, 'date'))->locale('et');
+
         return $date->dayName;
     });
 
@@ -102,5 +107,3 @@ require __DIR__.'/authors.php';
 // posts on juba Route::resource('posts', ...) ülal; posts.php dubleeriks marsruute
 // require __DIR__.'/posts.php';
 // require __DIR__.'/comments.php';
-
-

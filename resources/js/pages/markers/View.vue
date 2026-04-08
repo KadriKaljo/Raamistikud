@@ -3,7 +3,7 @@ import MarkerReadonlyMap from '@/components/MarkerReadonlyMap.vue';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { dashboard } from '@/routes';
+import { index as mapIndex } from '@/routes/map';
 import type { BreadcrumbItem } from '@/types';
 import { computed } from 'vue';
 
@@ -23,7 +23,7 @@ const props = defineProps<{
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Markers',
+        title: 'Markerid',
         href: '/markers',
     },
     {
@@ -54,8 +54,7 @@ const openStreetMapUrl = computed(() => {
     return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=15/${lat}/${lng}`;
 });
 
-/** Dashboard: markerite kaart (`panel=map`). */
-const dashboardMapHref = dashboard.url({ query: { panel: 'map' } });
+const mapHref = mapIndex().url;
 
 function deleteMarker() {
     if (!confirm('Kas kustutada marker?')) return;
@@ -71,7 +70,7 @@ function deleteMarker() {
         <div class="mx-auto max-w-5xl space-y-6 p-6">
             <div>
                 <Link
-                    :href="dashboardMapHref"
+                    :href="mapHref"
                     class="inline-flex items-center gap-1.5 rounded-lg text-sm font-medium text-emerald-800 transition hover:text-emerald-950 hover:underline dark:text-emerald-400 dark:hover:text-emerald-300"
                 >
                     ← Tagasi kaardivaatesse
@@ -145,7 +144,7 @@ function deleteMarker() {
                     :href="`/markers/${marker.id}/edit`"
                     class="inline-flex items-center justify-center rounded-2xl border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted"
                 >
-                    Edit
+                    Muuda
                 </Link>
                 <Button
                     type="button"
@@ -153,7 +152,7 @@ function deleteMarker() {
                     class="rounded-2xl border-red-200 bg-white text-red-600 shadow-xs hover:bg-red-50 hover:text-red-700 dark:border-red-800/60 dark:bg-background dark:text-red-400 dark:hover:bg-red-950/40 dark:hover:text-red-300"
                     @click="deleteMarker"
                 >
-                    Delete
+                    Kustuta
                 </Button>
             </div>
         </div>

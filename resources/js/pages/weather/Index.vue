@@ -2,11 +2,12 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { WeatherData, type BreadcrumbItem } from '@/types';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { ref, watch } from 'vue';
+import InputError from '@/components/InputError.vue';
+import { ref, watch, computed } from 'vue';
 import { Droplets, Wind } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -26,6 +27,12 @@ const props = defineProps<{
 }>();
 
 const cityQuery = ref(props.requestedCity);
+
+const page = usePage();
+const cityError = computed(() => {
+    const errors = page.props.errors as Record<string, string> | undefined;
+    return errors?.city;
+});
 
 watch(
     () => props.requestedCity,
@@ -75,9 +82,11 @@ function goHome() {
                             v-model="cityQuery"
                             type="text"
                             name="city"
+                            maxlength="100"
                             placeholder="Nt Tartu või London, UK"
                             autocomplete="off"
                         />
+                        <InputError :message="cityError" />
                     </div>
                     <Button type="submit" class="shrink-0 rounded-xl">Otsi</Button>
                 </form>
@@ -156,6 +165,16 @@ function goHome() {
                     </div>
                 </div>
             </div>
+
+            <p class="text-center text-xs leading-relaxed text-muted-foreground">
+                Ilmaandmed:
+                <a
+                    class="font-medium text-sky-700 underline-offset-2 hover:underline dark:text-sky-400"
+                    href="https://openweathermap.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >OpenWeatherMap</a>.
+            </p>
         </div>
     </AppLayout>
 </template>

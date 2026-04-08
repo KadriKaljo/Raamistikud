@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class WeatherController extends Controller
 {
@@ -16,14 +17,30 @@ class WeatherController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $city = $request->query('city');
-        if (is_array($city)) {
-            $city = isset($city[0]) && is_string($city[0]) ? trim($city[0]) : '';
+        $cityParam = $request->query('city');
+        if (is_array($cityParam)) {
+            $cityInput = isset($cityParam[0]) && is_string($cityParam[0]) ? trim($cityParam[0]) : '';
         } else {
-            $city = is_string($city) ? trim($city) : '';
+            $cityInput = is_string($cityParam) ? trim($cityParam) : '';
         }
-        if ($city === '') {
+
+        if ($cityInput === '') {
             $city = 'Tallinn';
+        } else {
+            Validator::make(
+                ['city' => $cityInput],
+                [
+                    'city' => ['string', 'max:100'],
+                ],
+                [
+                    'city.max' => 'Linna või asukoha nimi võib olla kuni :max tähemärki.',
+                ],
+                [
+                    'city' => 'asukoha nimi',
+                ],
+            )->validate();
+
+            $city = $cityInput;
         }
 
         $cacheKey = 'weather:'.Str::lower($city);

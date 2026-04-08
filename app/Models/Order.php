@@ -17,6 +17,7 @@ class Order extends Model
         'phone',
         'payment_method',
         'payment_status',
+        'stripe_session_id',
         'total_amount',
     ];
 }

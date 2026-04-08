@@ -14,7 +14,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { destroy, edit, show, index } from '@/routes/posts';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { MoreVertical } from 'lucide-vue-next';
+import { MoreVertical, Plus } from 'lucide-vue-next';
 
 // Breadcrumbs for layout navigation
 const breadcrumbs: BreadcrumbItem[] = [
@@ -105,9 +105,21 @@ const deletePost = (postId: number) => {
     <div
       class="mx-auto flex h-full w-full max-w-6xl flex-col gap-6 overflow-x-auto rounded-2xl bg-gradient-to-b from-muted/30 via-background to-background p-4 md:p-6 dark:from-muted/10"
     >
-      <div>
-        <h1 class="text-xl font-semibold tracking-tight md:text-2xl">Blogi postitused</h1>
-        <p class="mt-1 text-sm text-muted-foreground">Loetelu, muutmine ja kustutamine.</p>
+      <div
+        class="rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-50/90 via-card to-fuchsia-50/40 p-5 shadow-sm dark:border-violet-900/40 dark:from-violet-950/35 dark:via-card dark:to-fuchsia-950/20"
+      >
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 class="text-xl font-semibold tracking-tight md:text-2xl">Blogi postitused</h1>
+            <p class="mt-1 text-sm text-muted-foreground">Loetelu, muutmine ja kustutamine.</p>
+          </div>
+          <Button as-child size="sm" class="rounded-xl">
+            <Link href="/posts/create">
+              <Plus class="mr-1.5 size-4" />
+              Uus postitus
+            </Link>
+          </Button>
+        </div>
       </div>
 
       <div class="overflow-hidden rounded-2xl border border-border/60 bg-card/90 shadow-sm dark:bg-card/60">
@@ -128,9 +140,13 @@ const deletePost = (postId: number) => {
           </TableHeader>
 
           <TableBody>
-            <TableRow v-for="post in posts.data" :key="post.id" class="hover:bg-muted/30">
+            <TableRow v-for="post in posts.data" :key="post.id" class="hover:bg-muted/20">
               <TableCell class="font-mono text-xs text-muted-foreground">{{ post.id }}</TableCell>
-              <TableCell class="font-medium">{{ post.title }}</TableCell>
+              <TableCell>
+                <Link :href="show.url(post.id)" class="font-medium underline-offset-2 hover:underline">
+                  {{ post.title }}
+                </Link>
+              </TableCell>
               <TableCell class="text-sm">
                 {{ post.author.first_name }} {{ post.author.last_name }}
               </TableCell>
@@ -152,7 +168,7 @@ const deletePost = (postId: number) => {
                 <div class="flex justify-end">
                   <DropdownMenu>
                     <DropdownMenuTrigger as-child>
-                      <Button size="icon" variant="ghost">
+                      <Button size="icon" variant="ghost" class="size-8 rounded-lg">
                         <MoreVertical />
                       </Button>
                     </DropdownMenuTrigger>

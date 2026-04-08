@@ -6,7 +6,6 @@ use App\Models\Marker;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-
 class MarkerController extends Controller
 {
     /**
@@ -24,7 +23,7 @@ class MarkerController extends Controller
      */
     public function create()
     {
-        return redirect()->route('dashboard'); // redirectib tagasi dashboardi lehele, sest meil kaardil klikiga
+        return redirect()->route('map.index');
     }
 
     /**
@@ -33,17 +32,16 @@ class MarkerController extends Controller
     public function store(Request $request)
     {
 
-
-
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'description' => 'nullable|string',
-        ]); //kontrollib andmeid, kas on korrektsed
+        ]); // kontrollib andmeid, kas on korrektsed
 
         Marker::create($data); // salvestab rea tabelisse
-        return redirect()->route('dashboard');
+
+        return redirect()->route('map.index');
     }
 
     /**
@@ -79,6 +77,7 @@ class MarkerController extends Controller
         ]);
 
         $marker->update($data);
+
         return redirect()->route('markers.index')->with('success', 'Marker uuendatud.');
     }
 
@@ -88,6 +87,7 @@ class MarkerController extends Controller
     public function destroy(Marker $marker)
     {
         $marker->delete();
+
         return redirect()->route('markers.index')->with('success', 'Marker kustutatud.');
     }
 }

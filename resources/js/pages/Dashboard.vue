@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
+import { index as mapIndex } from '@/routes/map';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
-import MapView from '@/components/MapView.vue';
-import { Button } from '@/components/ui/button';
-import { computed } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 import { BookOpen, CloudSun, MapPinned, ShoppingBag } from 'lucide-vue-next';
-
-type DashboardPanel = 'home' | 'map';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -16,29 +12,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard().url,
     },
 ];
-
-const props = defineProps<{
-    initialPanel?: DashboardPanel;
-    markers: Array<{
-        id: number;
-        name: string;
-        latitude: number;
-        longitude: number;
-        description: string | null;
-        added: string;
-        edited: string | null;
-    }>;
-}>();
-
-const panel = computed(() => props.initialPanel ?? 'home');
-
-function goHome() {
-    router.get(dashboard().url, {}, { preserveScroll: true });
-}
-
-function goMap() {
-    router.get(dashboard().url, { panel: 'map' }, { preserveScroll: true });
-}
 </script>
 
 <template>
@@ -48,7 +21,7 @@ function goMap() {
         <div
             class="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-2xl bg-gradient-to-b from-muted/30 via-background to-background p-4 md:p-6 dark:from-muted/10"
         >
-            <div v-if="panel === 'home'" class="space-y-6">
+            <div class="space-y-6">
                 <div
                     class="rounded-2xl border border-border/50 bg-card/60 px-5 py-4 shadow-sm backdrop-blur-sm dark:bg-card/40"
                 >
@@ -85,10 +58,9 @@ function goMap() {
                             >
                         </Link>
 
-                        <button
-                            type="button"
+                        <Link
+                            :href="mapIndex().url"
                             class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-emerald-300/80 hover:shadow-md dark:border-emerald-900/50 dark:from-emerald-950/35 dark:via-card dark:to-teal-950/20 dark:hover:border-emerald-700/60"
-                            @click="goMap"
                         >
                             <div class="flex items-start justify-between gap-3">
                                 <span
@@ -111,7 +83,7 @@ function goMap() {
                                 class="text-sm font-medium text-emerald-800 transition group-hover:text-emerald-900 dark:text-emerald-400 dark:group-hover:text-emerald-300"
                                 >Ava kaart →</span
                             >
-                        </button>
+                        </Link>
                     </div>
 
                     <div class="flex flex-col gap-4">
@@ -171,44 +143,6 @@ function goMap() {
                     </div>
                 </div>
             </div>
-
-            <template v-else>
-                <div class="flex items-center gap-2">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        class="rounded-full border-dashed"
-                        @click="goHome"
-                    >
-                        ← Tagasi valikusse
-                    </Button>
-                </div>
-
-                <div
-                    v-if="panel === 'map'"
-                    class="flex min-h-0 flex-col overflow-hidden rounded-2xl border border-emerald-200/50 bg-card shadow-md dark:border-emerald-900/40"
-                >
-                    <div
-                        class="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-200/40 bg-gradient-to-r from-emerald-50/80 to-transparent px-4 py-3.5 dark:border-emerald-900/40 dark:from-emerald-950/30"
-                    >
-                        <div>
-                            <p class="text-sm font-semibold tracking-tight">Markerid</p>
-                            <p class="text-xs text-muted-foreground">Kliki kaardil, et lisada marker</p>
-                        </div>
-                        <Link
-                            href="/markers"
-                            class="shrink-0 rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-800 transition hover:bg-emerald-500/20 dark:text-emerald-300"
-                        >
-                            Kõik markerid →
-                        </Link>
-                    </div>
-
-                    <div class="relative min-h-[min(50vh,420px)] flex-1 lg:min-h-[min(65vh,560px)]">
-                        <MapView :markers="markers" />
-                    </div>
-                </div>
-            </template>
         </div>
     </AppLayout>
 </template>
