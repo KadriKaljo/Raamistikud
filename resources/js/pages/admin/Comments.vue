@@ -16,7 +16,7 @@ type CommentRow = {
     user: { id: number; name: string; email: string };
 };
 
-const props = defineProps<{
+defineProps<{
     comments: {
         data: CommentRow[];
         current_page: number;
