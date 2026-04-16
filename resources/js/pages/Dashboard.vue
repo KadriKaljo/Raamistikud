@@ -26,7 +26,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     class="rounded-2xl border border-border/50 bg-card/60 px-5 py-4 shadow-sm backdrop-blur-sm dark:bg-card/40"
                 >
                     <h1 class="text-xl font-semibold tracking-tight md:text-2xl">Tere tulemast</h1>
-                    <p class="mt-1 text-sm text-muted-foreground">Vali tegevus — ilm, kaart, pood või blogi.</p>
+                    <p class="mt-1 text-sm text-muted-foreground">Vali tegevus</p>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2">
