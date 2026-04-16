@@ -10,7 +10,7 @@ import { index as postsIndex } from '@/routes/posts';
 import { index as productsIndex } from '@/routes/products';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, MapPinned, MessageSquare, Shield, ShoppingBag, ShoppingCart } from 'lucide-vue-next';
+import { BookOpen, Clapperboard, Folder, LayoutGrid, MapPinned, MessageSquare, Shield, ShoppingBag, ShoppingCart, Plane } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -43,6 +43,16 @@ const mainNavItems = computed((): NavItem[] => {
             title: cartCount > 0 ? `Ostukorv (${cartCount})` : 'Ostukorv',
             href: cartIndex(),
             icon: ShoppingCart,
+        },
+        {
+            title: 'Reisisihtkohad',
+            href: '/travel-destinations',
+            icon: Plane,
+        },
+        {
+            title: 'Filmid (välis-API)',
+            href: '/travel-destinations/movies',
+            icon: Clapperboard,
         },
     ];
 

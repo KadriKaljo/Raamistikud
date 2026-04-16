@@ -9,6 +9,7 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\MarkerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TravelDestinationController;
 use App\Http\Controllers\WeatherController;
 use App\Mail\Timetable;
 use Carbon\Carbon;
@@ -42,6 +43,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/checkout/complete/{order}', [CheckoutController::class, 'complete'])->name('checkout.complete');
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/cancel/{order}', [CheckoutController::class, 'cancel'])->name('checkout.cancel');
+    Route::get('/travel-destinations', [TravelDestinationController::class, 'index'])->name('travel-destinations.index');
+    Route::post('/travel-destinations', [TravelDestinationController::class, 'store'])->name('travel-destinations.store');
+    Route::get('/travel-destinations/movies', function () {
+        return Inertia::render('travel-destinations/Movies');
+    })->name('travel-destinations.movies');
 
 });
 
