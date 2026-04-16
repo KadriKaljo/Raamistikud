@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             // CommentSeeder::class,
             ProductSeeder::class,
             ReviewSeeder::class,
+            TravelDestinationSeeder::class,
 
         ]);
     }

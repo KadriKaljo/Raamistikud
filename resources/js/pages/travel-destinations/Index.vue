@@ -7,6 +7,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
+import { Plane } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 
 type TravelDestination = {
@@ -104,22 +105,25 @@ function resetFilters() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 md:p-6">
-            <section class="rounded-2xl border border-border/60 bg-card/70 p-5 shadow-sm">
+            <section class="rounded-2xl border border-cyan-200/60 bg-gradient-to-br from-cyan-50/90 via-white to-blue-50/40 p-6 shadow-sm dark:border-cyan-900/50 dark:from-cyan-950/35 dark:via-card dark:to-blue-950/20">
                 <div class="flex flex-wrap items-start justify-between gap-3">
-                    <div>
+                    <div class="space-y-2">
+                        <span class="inline-flex rounded-xl bg-cyan-500/15 p-2.5 text-cyan-700 ring-1 ring-cyan-500/20 dark:bg-cyan-400/10 dark:text-cyan-300">
+                            <Plane class="size-5" />
+                        </span>
                         <h1 class="text-2xl font-semibold tracking-tight">Lemmik reisisihtkohad</h1>
                         <p class="mt-1 text-sm text-muted-foreground">
                             Lisa reisisihtkohti, filtreeri neid ja kasuta sama andmestikku JSON API kaudu.
                         </p>
                     </div>
-                    <Link href="/travel-destinations/movies" class="rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium hover:bg-muted">
+                    <Link href="/travel-destinations/movies" class="rounded-lg border border-cyan-300/70 bg-white/80 px-3 py-2 text-sm font-medium text-cyan-900 hover:bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/30 dark:text-cyan-200 dark:hover:bg-cyan-950/50">
                         Ava välise movies API vaade →
                     </Link>
                 </div>
             </section>
 
             <section class="grid gap-6 lg:grid-cols-2">
-                <form class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-5 shadow-sm" @submit.prevent="submitCreateForm">
+                <form class="space-y-4 rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/40 p-5 shadow-sm dark:border-emerald-900/50 dark:from-emerald-950/35 dark:via-card dark:to-teal-950/20" @submit.prevent="submitCreateForm">
                     <h2 class="text-lg font-semibold">Lisa uus reisisihtkoht</h2>
 
                     <div class="grid gap-2">
@@ -156,7 +160,7 @@ function resetFilters() {
                     <Button type="submit" :disabled="createForm.processing">Salvesta sihtkoht</Button>
                 </form>
 
-                <div class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-5 shadow-sm">
+                <div class="space-y-4 rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-50/90 via-white to-fuchsia-50/40 p-5 shadow-sm dark:border-violet-900/50 dark:from-violet-950/35 dark:via-card dark:to-fuchsia-950/20">
                     <h2 class="text-lg font-semibold">JSON API (dokumenteeritud)</h2>
                     <div class="space-y-2 text-sm text-muted-foreground">
                         <p><span class="font-medium text-foreground">Endpoint:</span> <code>/api/travel-destinations</code></p>
@@ -167,7 +171,7 @@ function resetFilters() {
                 </div>
             </section>
 
-            <section class="space-y-4 rounded-2xl border border-border/60 bg-card/70 p-5 shadow-sm">
+            <section class="space-y-4 rounded-2xl border border-sky-200/60 bg-gradient-to-br from-sky-50/90 via-white to-cyan-50/40 p-5 shadow-sm dark:border-sky-900/50 dark:from-sky-950/35 dark:via-card dark:to-cyan-950/20">
                 <h2 class="text-lg font-semibold">Sirvi reisisihtkohti</h2>
 
                 <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-6">

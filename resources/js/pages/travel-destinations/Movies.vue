@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
+import { Clapperboard } from 'lucide-vue-next';
 import { onMounted, ref } from 'vue';
 
 type GenericMovie = Record<string, unknown>;
@@ -52,15 +53,20 @@ function movieTitle(movie: GenericMovie): string {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-6">
-            <section class="rounded-2xl border border-border/60 bg-card/70 p-5 shadow-sm">
-                <h1 class="text-2xl font-semibold tracking-tight">Kaasõpilase movies API</h1>
+            <section class="rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-50/90 via-white to-fuchsia-50/40 p-6 shadow-sm dark:border-violet-900/50 dark:from-violet-950/35 dark:via-card dark:to-fuchsia-950/20">
+                <div class="space-y-2">
+                    <span class="inline-flex rounded-xl bg-violet-500/15 p-2.5 text-violet-700 ring-1 ring-violet-500/20 dark:bg-violet-400/10 dark:text-violet-300">
+                        <Clapperboard class="size-5" />
+                    </span>
+                    <h1 class="text-2xl font-semibold tracking-tight">Kaasõpilase movies API</h1>
+                </div>
                 <p class="mt-1 text-sm text-muted-foreground">
-                    Eraldi lisafunktsioon. Andmed tulevad välisest JSON API-st:
+                    Andmed tulevad:
                     <code>https://ralfiharjutus.ta24siim.itmajakas.ee/api/movies?limit=20</code>
                 </p>
             </section>
 
-            <section v-if="loading" class="rounded-2xl border border-border/60 bg-card/70 p-10 text-center text-sm text-muted-foreground">
+            <section v-if="loading" class="rounded-2xl border border-sky-200/60 bg-gradient-to-br from-sky-50/90 via-white to-blue-50/40 p-10 text-center text-sm text-muted-foreground dark:border-sky-900/50 dark:from-sky-950/35 dark:via-card dark:to-blue-950/20">
                 Laen filmiandmeid...
             </section>
 
@@ -69,7 +75,7 @@ function movieTitle(movie: GenericMovie): string {
             </section>
 
             <section v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                <article v-for="(movie, idx) in movies" :key="idx" class="rounded-xl border border-border/60 bg-card/70 p-4 shadow-sm">
+                <article v-for="(movie, idx) in movies" :key="idx" class="rounded-xl border border-border/60 bg-gradient-to-br from-card to-muted/20 p-4 shadow-sm">
                     <h2 class="text-base font-semibold">{{ movieTitle(movie) }}</h2>
                     <pre class="mt-3 overflow-x-auto rounded-lg bg-muted/50 p-3 text-xs">{{ JSON.stringify(movie, null, 2) }}</pre>
                 </article>

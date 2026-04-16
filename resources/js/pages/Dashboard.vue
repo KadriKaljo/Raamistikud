@@ -4,7 +4,7 @@ import { dashboard } from '@/routes';
 import { index as mapIndex } from '@/routes/map';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/vue3';
-import { BookOpen, CloudSun, MapPinned, ShoppingBag } from 'lucide-vue-next';
+import { BookOpen, Clapperboard, CloudSun, MapPinned, Plane, ShoppingBag } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -84,6 +84,33 @@ const breadcrumbs: BreadcrumbItem[] = [
                                 >Ava kaart →</span
                             >
                         </Link>
+
+                        <Link
+                            href="/travel-destinations"
+                            class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-cyan-200/60 bg-gradient-to-br from-cyan-50/90 via-white to-blue-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-300/80 hover:shadow-md dark:border-cyan-900/50 dark:from-cyan-950/35 dark:via-card dark:to-blue-950/20 dark:hover:border-cyan-700/60"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span
+                                    class="inline-flex rounded-xl bg-cyan-500/15 p-2.5 text-cyan-700 ring-1 ring-cyan-500/20 dark:bg-cyan-400/10 dark:text-cyan-300"
+                                >
+                                    <Plane class="size-6" aria-hidden="true" />
+                                </span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-widest text-cyan-800/80 dark:text-cyan-400/90"
+                                    >Reis</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block text-lg font-semibold tracking-tight">Reisisihtkohad</span>
+                                <span class="block text-sm leading-relaxed text-muted-foreground"
+                                    >Lisa, sirvi ja filtreeri sihtkohti</span
+                                >
+                            </div>
+                            <span
+                                class="text-sm font-medium text-cyan-900 transition group-hover:text-cyan-950 dark:text-cyan-400 dark:group-hover:text-cyan-300"
+                                >Ava reisivaade →</span
+                            >
+                        </Link>
                     </div>
 
                     <div class="flex flex-col gap-4">
@@ -138,6 +165,33 @@ const breadcrumbs: BreadcrumbItem[] = [
                             <span
                                 class="text-sm font-medium text-violet-900 transition group-hover:text-violet-950 dark:text-violet-400 dark:group-hover:text-violet-300"
                                 >Mine blogisse →</span
+                            >
+                        </Link>
+
+                        <Link
+                            href="/travel-destinations/movies"
+                            class="group relative flex flex-col gap-4 overflow-hidden rounded-2xl border border-fuchsia-200/60 bg-gradient-to-br from-fuchsia-50/90 via-white to-pink-50/40 p-6 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-fuchsia-300/80 hover:shadow-md dark:border-fuchsia-900/50 dark:from-fuchsia-950/35 dark:via-card dark:to-pink-950/20 dark:hover:border-fuchsia-700/60"
+                        >
+                            <div class="flex items-start justify-between gap-3">
+                                <span
+                                    class="inline-flex rounded-xl bg-fuchsia-500/15 p-2.5 text-fuchsia-700 ring-1 ring-fuchsia-500/20 dark:bg-fuchsia-400/10 dark:text-fuchsia-300"
+                                >
+                                    <Clapperboard class="size-6" aria-hidden="true" />
+                                </span>
+                                <span
+                                    class="text-[10px] font-semibold uppercase tracking-widest text-fuchsia-800/80 dark:text-fuchsia-400/90"
+                                    >API</span
+                                >
+                            </div>
+                            <div class="space-y-1">
+                                <span class="block text-lg font-semibold tracking-tight">Filmid (API)</span>
+                                <span class="block text-sm leading-relaxed text-muted-foreground"
+                                    >Välise JSON API andmete kuvamine</span
+                                >
+                            </div>
+                            <span
+                                class="text-sm font-medium text-fuchsia-900 transition group-hover:text-fuchsia-950 dark:text-fuchsia-400 dark:group-hover:text-fuchsia-300"
+                                >Ava filmivaade →</span
                             >
                         </Link>
                     </div>
