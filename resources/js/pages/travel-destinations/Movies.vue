@@ -61,7 +61,6 @@ function movieTitle(movie: GenericMovie): string {
                     <h1 class="text-2xl font-semibold tracking-tight">Kaasõpilase movies API</h1>
                 </div>
                 <p class="mt-1 text-sm text-muted-foreground">
-                    Andmed tulevad:
                     <code>https://ralfiharjutus.ta24siim.itmajakas.ee/api/movies?limit=20</code>
                 </p>
             </section>

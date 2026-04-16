@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TravelDestination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class TravelDestinationController extends Controller
@@ -72,6 +73,11 @@ class TravelDestinationController extends Controller
             'country' => ['required', 'string', 'max:100'],
             'best_season' => ['required', 'string', 'max:100'],
         ]);
+
+        if (empty($data['image'])) {
+            $seed = Str::slug((string) $data['title']);
+            $data['image'] = "https://picsum.photos/seed/travel-{$seed}/800/500";
+        }
 
         TravelDestination::create($data);
 

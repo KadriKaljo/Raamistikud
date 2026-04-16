@@ -8,7 +8,7 @@ import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { Plane } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
 type TravelDestination = {
     id: number;
@@ -59,20 +59,6 @@ const filterState = ref({
     direction: props.filters.direction ?? 'desc',
 });
 
-const apiExampleUrl = computed(() => {
-    const params = new URLSearchParams({
-        limit: '10',
-        sort: filterState.value.sort,
-        direction: filterState.value.direction,
-    });
-
-    if (filterState.value.q) params.set('search', filterState.value.q);
-    if (filterState.value.country) params.set('country', filterState.value.country);
-    if (filterState.value.best_season) params.set('best_season', filterState.value.best_season);
-
-    return `/api/travel-destinations?${params.toString()}`;
-});
-
 function submitCreateForm() {
     createForm.post('/travel-destinations', {
         preserveScroll: true,
@@ -98,6 +84,15 @@ function resetFilters() {
     };
     applyFilters();
 }
+
+function destinationImage(destination: TravelDestination): string {
+    if (destination.image && destination.image.trim() !== '') {
+        return destination.image;
+    }
+
+    const seed = destination.title.toLowerCase().replace(/\s+/g, '-');
+    return `https://picsum.photos/seed/travel-${seed}/800/500`;
+}
 </script>
 
 <template>
@@ -116,13 +111,10 @@ function resetFilters() {
                             Lisa reisisihtkohti, filtreeri neid ja kasuta sama andmestikku JSON API kaudu.
                         </p>
                     </div>
-                    <Link href="/travel-destinations/movies" class="rounded-lg border border-cyan-300/70 bg-white/80 px-3 py-2 text-sm font-medium text-cyan-900 hover:bg-cyan-50 dark:border-cyan-800 dark:bg-cyan-950/30 dark:text-cyan-200 dark:hover:bg-cyan-950/50">
-                        Ava välise movies API vaade →
-                    </Link>
                 </div>
             </section>
 
-            <section class="grid gap-6 lg:grid-cols-2">
+            <section class="grid gap-6">
                 <form class="space-y-4 rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/90 via-white to-teal-50/40 p-5 shadow-sm dark:border-emerald-900/50 dark:from-emerald-950/35 dark:via-card dark:to-teal-950/20" @submit.prevent="submitCreateForm">
                     <h2 class="text-lg font-semibold">Lisa uus reisisihtkoht</h2>
 
@@ -159,16 +151,6 @@ function resetFilters() {
 
                     <Button type="submit" :disabled="createForm.processing">Salvesta sihtkoht</Button>
                 </form>
-
-                <div class="space-y-4 rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-50/90 via-white to-fuchsia-50/40 p-5 shadow-sm dark:border-violet-900/50 dark:from-violet-950/35 dark:via-card dark:to-fuchsia-950/20">
-                    <h2 class="text-lg font-semibold">JSON API (dokumenteeritud)</h2>
-                    <div class="space-y-2 text-sm text-muted-foreground">
-                        <p><span class="font-medium text-foreground">Endpoint:</span> <code>/api/travel-destinations</code></p>
-                        <p><span class="font-medium text-foreground">Parameetrid:</span> <code>search</code>, <code>country</code>, <code>best_season</code>, <code>sort</code>, <code>direction</code>, <code>limit</code></p>
-                        <p><span class="font-medium text-foreground">Näide:</span> <code>{{ apiExampleUrl }}</code></p>
-                        <p>API vastused on cache'itud 10 minutiks.</p>
-                    </div>
-                </div>
             </section>
 
             <section class="space-y-4 rounded-2xl border border-sky-200/60 bg-gradient-to-br from-sky-50/90 via-white to-cyan-50/40 p-5 shadow-sm dark:border-sky-900/50 dark:from-sky-950/35 dark:via-card dark:to-cyan-950/20">
@@ -212,8 +194,7 @@ function resetFilters() {
                 <div v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <article v-for="destination in destinations.data" :key="destination.id" class="overflow-hidden rounded-xl border border-border/60 bg-background">
                         <img
-                            v-if="destination.image"
-                            :src="destination.image"
+                            :src="destinationImage(destination)"
                             :alt="destination.title"
                             class="h-40 w-full object-cover"
                         />
