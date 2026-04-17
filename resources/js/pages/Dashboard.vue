@@ -27,7 +27,6 @@ const breadcrumbs: BreadcrumbItem[] = [
                 >
                     <h1 class="text-xl font-semibold tracking-tight md:text-2xl">Tere tulemast</h1>
                     <p class="mt-1 text-sm text-muted-foreground">Vali tegevus</p>
-                    <p class="mt-1 text-xs text-muted-foreground/90">Sama põhimenüü on alati nähtav ka vasakul külgribal.</p>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2">
