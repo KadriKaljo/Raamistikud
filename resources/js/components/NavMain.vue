@@ -14,7 +14,7 @@ const page = usePage();
 <template>
     <SidebarGroup class="px-2 py-0">
         <SidebarGroupLabel class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
-            Menüü
+            Põhifunktsioonid
         </SidebarGroupLabel>
         <SidebarMenu>
             <SidebarMenuItem v-for="item in items" :key="item.title">

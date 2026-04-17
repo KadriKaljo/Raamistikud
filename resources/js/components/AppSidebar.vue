@@ -9,7 +9,7 @@ import { index as postsIndex } from '@/routes/posts';
 import { index as productsIndex } from '@/routes/products';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, Clapperboard, CloudSun, Folder, LayoutGrid, MapPinned, MessageSquare, Shield, ShoppingBag, Plane } from 'lucide-vue-next';
+import { BookOpen, Clapperboard, CloudSun, Folder, Home, LayoutGrid, MapPinned, MessageSquare, Shield, ShoppingBag, Plane } from 'lucide-vue-next';
 import { computed } from 'vue';
 import AppLogo from './AppLogo.vue';
 
@@ -18,12 +18,17 @@ const page = usePage();
 const mainNavItems = computed((): NavItem[] => {
     const items: NavItem[] = [
         {
+            title: 'Avaleht',
+            href: '/',
+            icon: Home,
+        },
+        {
             title: 'Dashboard',
             href: dashboard(),
             icon: LayoutGrid,
         },
         {
-            title: 'Markerite kaart',
+            title: 'Kaart',
             href: mapIndex(),
             icon: MapPinned,
         },
@@ -48,7 +53,7 @@ const mainNavItems = computed((): NavItem[] => {
             icon: Plane,
         },
         {
-            title: 'Filmid (välis-API)',
+            title: 'Filmid (API)',
             href: '/travel-destinations/movies',
             icon: Clapperboard,
         },
