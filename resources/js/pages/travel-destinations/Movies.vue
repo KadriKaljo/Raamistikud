@@ -46,6 +46,38 @@ function movieTitle(movie: GenericMovie): string {
 
     return fallback;
 }
+
+function movieField(movie: GenericMovie, keys: string[]): string | null {
+    for (const key of keys) {
+        const value = movie[key];
+        if (typeof value === 'string' && value.trim() !== '') return value;
+        if (typeof value === 'number') return String(value);
+    }
+    return null;
+}
+
+function movieYear(movie: GenericMovie): string {
+    return movieField(movie, ['year', 'release_year', 'releaseYear', 'release_date', 'date']) ?? 'Puudub';
+}
+
+function movieGenre(movie: GenericMovie): string {
+    return movieField(movie, ['genre', 'genres', 'category']) ?? 'Määramata';
+}
+
+function movieRating(movie: GenericMovie): string {
+    return movieField(movie, ['rating', 'imdb_rating', 'score']) ?? 'Puudub';
+}
+
+function movieDuration(movie: GenericMovie): string {
+    return movieField(movie, ['duration', 'runtime', 'length']) ?? 'Puudub';
+}
+
+function movieDescription(movie: GenericMovie): string {
+    return (
+        movieField(movie, ['description', 'overview', 'summary', 'plot']) ??
+        'Kirjeldus puudub.'
+    );
+}
 </script>
 
 <template>
@@ -74,9 +106,35 @@ function movieTitle(movie: GenericMovie): string {
             </section>
 
             <section v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                <article v-for="(movie, idx) in movies" :key="idx" class="rounded-xl border border-border/60 bg-gradient-to-br from-card to-muted/20 p-4 shadow-sm">
+                <article
+                    v-for="(movie, idx) in movies"
+                    :key="idx"
+                    class="rounded-xl border border-border/60 bg-gradient-to-br from-card to-muted/20 p-4 shadow-sm"
+                >
                     <h2 class="text-base font-semibold">{{ movieTitle(movie) }}</h2>
-                    <pre class="mt-3 overflow-x-auto rounded-lg bg-muted/50 p-3 text-xs">{{ JSON.stringify(movie, null, 2) }}</pre>
+
+                    <dl class="mt-3 space-y-2 text-sm">
+                        <div class="flex items-start justify-between gap-3">
+                            <dt class="text-muted-foreground">Aasta</dt>
+                            <dd class="text-right font-medium">{{ movieYear(movie) }}</dd>
+                        </div>
+                        <div class="flex items-start justify-between gap-3">
+                            <dt class="text-muted-foreground">Žanr</dt>
+                            <dd class="text-right font-medium">{{ movieGenre(movie) }}</dd>
+                        </div>
+                        <div class="flex items-start justify-between gap-3">
+                            <dt class="text-muted-foreground">Hinnang</dt>
+                            <dd class="text-right font-medium">{{ movieRating(movie) }}</dd>
+                        </div>
+                        <div class="flex items-start justify-between gap-3">
+                            <dt class="text-muted-foreground">Kestus</dt>
+                            <dd class="text-right font-medium">{{ movieDuration(movie) }}</dd>
+                        </div>
+                    </dl>
+
+                    <p class="mt-3 line-clamp-4 text-sm text-muted-foreground">
+                        {{ movieDescription(movie) }}
+                    </p>
                 </article>
             </section>
         </div>

@@ -16,6 +16,11 @@ const props = defineProps<{ products: Product[] }>()
 const quantities = ref<Record<number, number>>({})
 const query = ref('')
 const sortBy = ref<'name' | 'price_asc' | 'price_desc'>('name')
+const travelSuggestions = [
+  { name: 'Reisikaelapadi', description: 'Mugavamad pikad bussis, rongis ja lennukisõidud.' },
+  { name: 'Kompaktne päevakott', description: 'Kerge kott linnaavastusteks ja päevamatkadeks.' },
+  { name: 'Universaaladapter', description: 'Hoia seadmed laetud eri riikide pistikutes.' },
+]
 const totalProducts = computed(() => props.products.length)
 const filteredProducts = computed(() => {
   const q = query.value.trim().toLowerCase()
@@ -115,6 +120,20 @@ const addToCart = (productId: number) => {
       <p v-if="filteredProducts.length === 0" class="rounded-xl border border-border/60 bg-card/60 p-5 text-center text-sm text-muted-foreground">
         Otsingule vastavaid tooteid ei leitud.
       </p>
+      <section v-if="totalProducts === 0" class="rounded-2xl border border-amber-200/50 bg-gradient-to-br from-amber-50/80 via-card to-orange-50/40 p-5 shadow-sm dark:border-amber-900/40 dark:from-amber-950/30 dark:via-card dark:to-orange-950/20">
+        <h2 class="text-base font-semibold">Reisiteemalised soovitused</h2>
+        <p class="mt-1 text-sm text-muted-foreground">Pood on hetkel tühi. Näidissuunad, mida võiksid lisada:</p>
+        <div class="mt-4 grid gap-3 sm:grid-cols-3">
+          <article
+            v-for="item in travelSuggestions"
+            :key="item.name"
+            class="rounded-xl border border-border/60 bg-background/80 p-3"
+          >
+            <h3 class="text-sm font-semibold">{{ item.name }}</h3>
+            <p class="mt-1 text-sm text-muted-foreground">{{ item.description }}</p>
+          </article>
+        </div>
+      </section>
       <div class="flex justify-end">
         <Link href="/cart" class="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium transition hover:bg-muted">
           Vaata ostukorvi →

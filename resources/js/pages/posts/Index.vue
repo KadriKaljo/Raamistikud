@@ -87,6 +87,12 @@ export type Post = {
 defineProps<{
   posts: PaginatedResponse;
 }>();
+
+const travelPostIdeas = [
+  'Minu 3-päevane reisiplaan Tallinnast Riiga',
+  'Kuidas pakkida käsipagas 7 päevaks',
+  'Parimad tasuta vaatamisväärsused Euroopas',
+];
 const deletePost = (postId: number) => {
   if (!confirm('Kustutada see postitus?')) return;
   router.delete(destroy.url(postId), {
@@ -189,9 +195,31 @@ const deletePost = (postId: number) => {
                 </div>
               </TableCell>
             </TableRow>
+            <TableRow v-if="posts.data.length === 0">
+              <TableCell colspan="7" class="py-8 text-center text-sm text-muted-foreground">
+                Postitusi veel pole.
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </div>
+
+      <section
+        v-if="posts.data.length === 0"
+        class="rounded-2xl border border-violet-200/60 bg-gradient-to-br from-violet-50/90 via-card to-fuchsia-50/40 p-5 shadow-sm dark:border-violet-900/40 dark:from-violet-950/35 dark:via-card dark:to-fuchsia-950/20"
+      >
+        <h2 class="text-base font-semibold">Reisiteemalised postituse ideed</h2>
+        <p class="mt-1 text-sm text-muted-foreground">Blogi on hetkel tühi. Alustuseks võid proovida:</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li
+            v-for="idea in travelPostIdeas"
+            :key="idea"
+            class="rounded-lg border border-border/60 bg-background/80 px-3 py-2"
+          >
+            {{ idea }}
+          </li>
+        </ul>
+      </section>
 
       <Pagination class="w-full" :page="posts.current_page" v-slot="{ page }" :total="posts.total"
         :items-per-page="posts.per_page" @update:page="(page) => router.get(index().url, { page: page })">
